@@ -4,7 +4,7 @@ import cn.hutool.http.HttpStatus;
 import com.wt.security.exp.IErrorCode;
 
 /**
- * 异常基础类
+ * 异常 基础类
  * @Author big uncle
  * @Date 2019/11/26 15:32
 **/
