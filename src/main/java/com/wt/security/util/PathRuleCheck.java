@@ -3,13 +3,7 @@ package com.wt.security.util;
 import java.util.List;
 import java.util.function.Consumer;
 
-/**
- * 路径校验器
- *
- * @author big uncle
- * @date 2020/12/1 10:41
- * @module
- **/
+
 public class PathRuleCheck {
 
     private static final String RULE_0 = "**";

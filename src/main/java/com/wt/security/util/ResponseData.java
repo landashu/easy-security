@@ -3,10 +3,7 @@ package com.wt.security.util;
 import cn.hutool.http.HttpStatus;
 import com.wt.security.exp.IErrorCode;
 
-/**
- * @Author big uncle
- * @Date 2019/11/26 15:48
- **/
+
 public class ResponseData <T>{
 
     private Integer code;

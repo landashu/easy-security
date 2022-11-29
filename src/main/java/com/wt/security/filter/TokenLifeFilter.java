@@ -15,10 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/**
- * @Author big uncle
- * @Date 2019/11/28 17:45
- **/
 public class TokenLifeFilter implements Filter {
 
     private static final Log log = LogFactory.getLog(TokenLifeFilter.class);

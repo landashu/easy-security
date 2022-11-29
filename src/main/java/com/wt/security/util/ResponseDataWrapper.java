@@ -35,23 +35,16 @@ public class ResponseDataWrapper extends HttpServletResponseWrapper {
         writer = new PrintWriter(new OutputStreamWriter(buffer,Charsets.UTF_8.toString()));
     }
 
-    /**
-     * 重载父类获取outputstream的方法
-    **/
     @Override
     public ServletOutputStream getOutputStream()throws IOException {
         return out;
     }
-    /**
-     * 重载父类获取writer的方法
-    **/
+
     @Override
     public PrintWriter getWriter() throws UnsupportedEncodingException {
         return writer;
     }
-    /**
-     * 重载父类获取flushBuffer的方法
-    **/
+
     @Override
     public void flushBuffer()throws IOException{
         if(out!=null){
@@ -68,9 +61,7 @@ public class ResponseDataWrapper extends HttpServletResponseWrapper {
     }
 
     public void changeContent(HttpServletResponse response, AuthenticationProperties authenticationProperties, ObjectMapper mapper) throws IOException{
-        /**
-         * 将out、writer中的数据强制输出到WapperedResponse的buffer里面，否则取不到数据
-        **/
+
         flushBuffer();
         PrintWriter out = null;
         String data = null;
@@ -83,7 +74,6 @@ public class ResponseDataWrapper extends HttpServletResponseWrapper {
             if(StrUtil.isEmpty(data)){
                 return;
             }
-            // 返回值加密
             ResponseData<Object> responseData = mapper.readValue(data.trim(),ResponseData.class);
             ThreadLocalUtil.ThreadLocalEntity threadLocalEntity = ThreadLocalUtil.threadLocal.get();
             if(!ObjectUtil.isEmpty(responseData.getData()) && threadLocalEntity.getDecrypt()){
@@ -121,7 +111,6 @@ public class ResponseDataWrapper extends HttpServletResponseWrapper {
     }
 
     private Object toString(Object obj,String key,String iv){
-        // TODO 转换 为 String 数据解密
         if(ObjectUtil.isEmpty(obj)){
             return obj;
         }
@@ -129,7 +118,6 @@ public class ResponseDataWrapper extends HttpServletResponseWrapper {
     }
 
     private Object toArray(Object obj,String key,String iv){
-        // TODO 转换 为 Array 数据解密
         return obj;
     }
 
@@ -146,9 +134,6 @@ public class ResponseDataWrapper extends HttpServletResponseWrapper {
     }
 
 
-    /**
-     * 内部类，对ServletOutputStream进行包装
-    **/
     private class WapperedOutputStream extends ServletOutputStream{
 
         private ByteArrayOutputStream bos=null;

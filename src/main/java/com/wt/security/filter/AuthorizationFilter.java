@@ -19,10 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * @Author big uncle
- * @Date 2019/11/28 17:45
- **/
+
 public class AuthorizationFilter implements Filter {
 
     private static final Log log = LogFactory.getLog(AuthorizationFilter.class);

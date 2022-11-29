@@ -2,11 +2,7 @@ package com.wt.security.exp.impl;
 
 import com.wt.security.exp.IErrorCode;
 
-/**
- * 异常基础类
- * @Author big uncle
- * @Date 2019/11/26 15:10
- **/
+
 public class BasicException extends Exception {
 
     private Integer code;
@@ -28,11 +24,6 @@ public class BasicException extends Exception {
         this.msg = msg;
     }
 
-    /**
-     * @Author big uncle
-     * @Date 2019/11/26 15:13
-     * @return
-    **/
     private BasicException(){
     }
 

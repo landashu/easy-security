@@ -8,11 +8,6 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.UUID;
 
-/**
- * @author big uncle
- * @date 2021/3/16 14:17
- * @module
- **/
 public class AesEncryptUtil {
 
     private static String INSTANCE = "AES/CBC/NoPadding";
@@ -21,14 +16,7 @@ public class AesEncryptUtil {
 
     public static final String IV = "iv";
 
-    /**
-     * 加密方法
-     * @param data  要加密的数据
-     * @param key 加密key
-     * @param iv 加密iv
-     * @return 加密的结果
-     * @throws Exception
-     */
+
     public static String encrypt(String data, String key, String iv){
         try {
             //"算法/模式/补码方式"NoPadding PkcsPadding
@@ -52,14 +40,7 @@ public class AesEncryptUtil {
         }
     }
 
-    /**
-     * 解密方法
-     * @param data 要解密的数据
-     * @param key  解密key
-     * @param iv 解密iv
-     * @return 解密的结果
-     * @throws Exception
-     */
+
     public static String desEncrypt(String data, String key, String iv) {
         try {
             byte[] encrypted1 = new Base64().decode(data);
@@ -79,25 +60,6 @@ public class AesEncryptUtil {
     public static String getRandomString(int length){
         return UUID.randomUUID().toString().replace("-","").substring(length);
     }
-
-
-    /**
-     * 测试
-     */
-//    public static void main(String args[]) throws Exception {
-//
-//        System.out.println();
-//
-//        String test = "yppu";
-//        String key =  "platformSecurity";
-//        String iv = "b65ac06676384164";
-//
-//        String data = encrypt(test, key, iv);
-//        System.out.println("加密前："+test);
-//        System.out.println("加密后："+data);
-//        String jiemi = desEncrypt("lmS0ZR7hjCNZxoqaNRKieQ==", key, iv).trim();
-//        System.out.println("解密："+jiemi);
-//    }
 
 
 }

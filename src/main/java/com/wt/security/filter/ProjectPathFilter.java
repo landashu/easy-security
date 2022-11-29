@@ -14,10 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * @Author big uncle
- * @Date 2019/11/28 17:45
- **/
+
 public class ProjectPathFilter implements Filter {
 
     private static final Log log = LogFactory.getLog(ProjectPathFilter.class);
@@ -31,9 +28,7 @@ public class ProjectPathFilter implements Filter {
         this.authenticationProperties = authenticationProperties;
     }
 
-    /**
-     * 不拦截 project
-    **/
+
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;

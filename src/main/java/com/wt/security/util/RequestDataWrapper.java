@@ -18,10 +18,6 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
 
-/**
- * @Author big uncle
- * @Date 2019/11/28 17:30
- **/
 
 public class RequestDataWrapper extends HttpServletRequestWrapper {
 
@@ -92,13 +88,6 @@ public class RequestDataWrapper extends HttpServletRequestWrapper {
         return sb.toString();
     }
 
-    /**
-     * 解密
-     * @Author big uncle
-     * @Date 2021/7/6 10:40
-     * @param data
-     * @return void
-    **/
     private void decrypt(RequestData data,HttpServletRequest request,
                          String key,ObjectMapper mapper) throws BasicException, JsonProcessingException {
         Object obj = data.getData();

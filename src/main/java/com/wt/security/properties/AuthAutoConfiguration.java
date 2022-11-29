@@ -1,12 +1,6 @@
 package com.wt.security.properties;
 
-/**
- * @Author big uncle
- * @Date 2020/3/29 10:58
- * @module
- **/
 
-import com.giant.security.filter.*;
 import com.wt.security.server.AuthSecurity;
 import com.wt.security.server.AuthorizeSecurity;
 import com.wt.security.filter.*;
@@ -35,9 +29,6 @@ public class AuthAutoConfiguration {
     @Resource
     AuthorizeSecurity authorizeSecurity;
 
-    /**
-     * 特殊过滤器
-     **/
     @Bean
     public FilterRegistrationBean<SpecialPathFilter> specialPathFilter() {
         FilterRegistrationBean<SpecialPathFilter> registration = new FilterRegistrationBean<>();
@@ -53,10 +44,6 @@ public class AuthAutoConfiguration {
         return registration;
     }
 
-
-    /**
-     * 项目过滤器
-     **/
     @Bean
     public FilterRegistrationBean<ProjectPathFilter> projectPathFilter() {
         FilterRegistrationBean<ProjectPathFilter> registration = new FilterRegistrationBean<>();
@@ -73,10 +60,6 @@ public class AuthAutoConfiguration {
         return registration;
     }
 
-
-    /**
-     * 解密过滤器
-     **/
     @Bean
     public FilterRegistrationBean<DecryptPathFilter> decryptPathFilter() {
         FilterRegistrationBean<DecryptPathFilter> registration = new FilterRegistrationBean<>();
@@ -92,10 +75,6 @@ public class AuthAutoConfiguration {
         return registration;
     }
 
-
-    /**
-     * 认证过滤器配置
-     **/
     @ConditionalOnClass(AuthSecurity.class)
     @Bean
     public FilterRegistrationBean<AuthenticationFilter> authenticationFilter() {
@@ -114,9 +93,6 @@ public class AuthAutoConfiguration {
         return registration;
     }
 
-    /**
-     * 续命过滤器
-     **/
     @ConditionalOnClass(AuthSecurity.class)
     @Bean
     public FilterRegistrationBean<TokenLifeFilter> continueLifeFilter() {
@@ -134,10 +110,6 @@ public class AuthAutoConfiguration {
         return registration;
     }
 
-
-    /**
-     * 权限过滤器拦截
-     **/
     @ConditionalOnClass(AuthorizeSecurity.class)
     @Bean
     public FilterRegistrationBean<AuthorizationFilter> authorizationFilter() {
@@ -155,11 +127,6 @@ public class AuthAutoConfiguration {
         return registration;
     }
 
-
-    /**
-     * 数据处理过滤器
-     *
-     **/
     @Bean
     public FilterRegistrationBean<DataFilter> requestDataFilter() {
         FilterRegistrationBean<DataFilter> registration = new FilterRegistrationBean<>();
