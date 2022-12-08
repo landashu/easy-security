@@ -5,13 +5,12 @@ import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wt.security.code.BasicCode;
 import com.wt.security.exp.impl.BasicException;
-import com.wt.security.properties.AuthenticationProperties;
+import com.wt.security.properties.AuthProperties;
 import org.apache.commons.codec.Charsets;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletOutputStream;
-import javax.servlet.ServletResponse;
 import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
@@ -21,7 +20,7 @@ import java.util.LinkedHashMap;
 
 public class ResponseDataWrapper extends HttpServletResponseWrapper {
 
-    private static final Log log = LogFactory.getLog(ResponseDataWrapper.class);
+    private static final Logger log = LoggerFactory.getLogger(ResponseDataWrapper.class);
 
     private ByteArrayOutputStream buffer = null;
     private ServletOutputStream out = null;
@@ -60,7 +59,7 @@ public class ResponseDataWrapper extends HttpServletResponseWrapper {
         buffer.reset();
     }
 
-    public void changeContent(HttpServletResponse response, AuthenticationProperties authenticationProperties, ObjectMapper mapper) throws IOException{
+    public void changeContent(HttpServletResponse response, AuthProperties authProperties, ObjectMapper mapper) throws IOException{
 
         flushBuffer();
         PrintWriter out = null;
@@ -77,7 +76,7 @@ public class ResponseDataWrapper extends HttpServletResponseWrapper {
             ResponseData<Object> responseData = mapper.readValue(data.trim(),ResponseData.class);
             ThreadLocalUtil.ThreadLocalEntity threadLocalEntity = ThreadLocalUtil.threadLocal.get();
             if(!ObjectUtil.isEmpty(responseData.getData()) && threadLocalEntity.getDecrypt()){
-                String obj = AesEncryptUtil.encrypt(mapper.writeValueAsString(responseData.getData()),authenticationProperties.getKey(),iv).trim();
+                String obj = AesEncryptUtil.encrypt(mapper.writeValueAsString(responseData.getData()), authProperties.getKey(),iv).trim();
                 if(StrUtil.isEmpty(obj)){
                     throw new BasicException(BasicCode.BASIC_CODE_99988);
                 }

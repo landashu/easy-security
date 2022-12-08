@@ -5,11 +5,11 @@ import cn.hutool.core.util.StrUtil;
 import com.wt.security.code.BasicCode;
 import com.wt.security.exp.impl.AuthenticationException;
 import com.wt.security.exp.impl.BasicException;
-import com.wt.security.properties.AuthenticationProperties;
+import com.wt.security.properties.AuthProperties;
 import com.wt.security.server.AuthSecurity;
 import com.wt.security.util.ThreadLocalUtil;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -19,17 +19,17 @@ import java.io.IOException;
 
 public class AuthenticationFilter implements Filter {
 
-    private static final Log log = LogFactory.getLog(AuthenticationFilter.class);
+    private static final Logger log = LoggerFactory.getLogger(AuthenticationFilter.class);
 
-    private AuthenticationProperties authenticationProperties;
+    private AuthProperties authProperties;
     private AuthSecurity authSecurity;
 
-    public AuthenticationProperties getAuthenticationProperties() {
-        return authenticationProperties;
+    public AuthProperties getAuthenticationProperties() {
+        return authProperties;
     }
 
-    public void setAuthenticationProperties(AuthenticationProperties authenticationProperties) {
-        this.authenticationProperties = authenticationProperties;
+    public void setAuthenticationProperties(AuthProperties authProperties) {
+        this.authProperties = authProperties;
     }
 
     public AuthSecurity getAuthenticationServerSource() {
@@ -55,18 +55,18 @@ public class AuthenticationFilter implements Filter {
         } catch (BasicException e) {
             // 跳转至失败处理器
             log.error(e.getMsg());
-            ThreadLocalUtil.forward(request,response,authenticationProperties.getErrorUrl(),e);
+            ThreadLocalUtil.forward(request,response, authProperties.getErrorUrl(),e);
         }
     }
 
 
     public Object getUser(HttpServletRequest httpServletRequest) throws BasicException {
-        String token = httpServletRequest.getHeader(authenticationProperties.getToken());
+        String token = httpServletRequest.getHeader(authProperties.getTokenKey());
         if (StrUtil.isEmpty(token)) {
             throw new AuthenticationException(BasicCode.BASIC_CODE_401);
         }
         Object obj = null;
-        String accessToken = authenticationProperties.getAuthenticate() + token;
+        String accessToken = authProperties.getAuthKey() + token;
         obj = httpServletRequest.getSession().getAttribute(accessToken);
         if(ObjectUtil.isEmpty(obj)){
             obj = authSecurity.getAuthUser(accessToken);

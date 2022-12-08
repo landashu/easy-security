@@ -6,9 +6,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wt.security.code.BasicCode;
 import com.wt.security.exp.impl.BasicException;
-import com.wt.security.properties.AuthenticationProperties;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.wt.security.properties.AuthProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
@@ -21,10 +21,10 @@ import java.util.LinkedHashMap;
 
 public class RequestDataWrapper extends HttpServletRequestWrapper {
 
-    private static final Log log = LogFactory.getLog(RequestDataWrapper.class);
+    private static final Logger log = LoggerFactory.getLogger(RequestDataWrapper.class);
     private String body;
 
-    public RequestDataWrapper(HttpServletRequest request, AuthenticationProperties authenticationProperties,
+    public RequestDataWrapper(HttpServletRequest request, AuthProperties authProperties,
                               ObjectMapper mapper) throws Exception {
         super(request);
         body = getBodyContent(request);
@@ -37,10 +37,10 @@ public class RequestDataWrapper extends HttpServletRequestWrapper {
             ThreadLocalUtil.ThreadLocalEntity threadLocalEntity = ThreadLocalUtil.threadLocal.get();
             requestData.setUser(threadLocalEntity.getUser());
             if(threadLocalEntity.getDecrypt()) {
-                decrypt(requestData,request,authenticationProperties.getKey(),mapper);
+                decrypt(requestData,request, authProperties.getKey(),mapper);
             }
         }
-        String token = request.getHeader(authenticationProperties.getToken());
+        String token = request.getHeader(authProperties.getTokenKey());
         requestData.setToken(token);
         body = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(requestData);
     }
@@ -103,37 +103,6 @@ public class RequestDataWrapper extends HttpServletRequestWrapper {
             throw new BasicException(BasicCode.BASIC_CODE_99987);
         }
         data.setData(mapper.readValue(json,LinkedHashMap.class));
-//        if(obj.getClass().equals(String.class)){
-//            toString(obj,data,key,iv);
-//        }
-//        if(obj.getClass().equals(LinkedHashMap.class)){
-//            toLinkedHashMap(obj,data,key,iv);
-//        }
-//        if(obj.getClass().equals(ArrayList.class)){
-//            toArray(obj,data,key,iv);
-//        }
-    }
-
-    private void toString(Object obj,RequestData data,String key,String iv){
-        // TODO 转换 为 String 数据解密
-        data.setData(obj);
-    }
-
-    private void toArray(Object obj,RequestData data,String key,String iv){
-        // TODO 转换 为 Array 数据解密
-        data.setData(obj);
-    }
-
-    private void toLinkedHashMap(Object obj,RequestData data,String key,String iv){
-        LinkedHashMap<String,Object> linkedHashMap = (LinkedHashMap) obj;
-        linkedHashMap.keySet().stream().forEach(i -> {
-            Object ov = linkedHashMap.get(i);
-            if(!ObjectUtil.isEmpty(ov)) {
-                String value = String.valueOf(ov).trim();
-                linkedHashMap.put(i, AesEncryptUtil.desEncrypt(value,key,iv).trim());
-            }
-        });
-        data.setData(linkedHashMap);
     }
 
 

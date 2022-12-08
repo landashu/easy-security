@@ -6,15 +6,17 @@ import java.util.List;
 
 
 @ConfigurationProperties(prefix = "security")
-public class AuthenticationProperties {
+public class AuthProperties {
 
-    private boolean enable = false;
+    private boolean authEnable = false;
 
-    private String authenticate = "SECURITY:AUTHENTICATE:";
+    private Boolean authorizeEnable = false;
 
-    private String authorize = "SECURITY:AUTHORIZE:";
+    private String authKey = "SECURITY:AUTHENTICATE:";
 
-    private String token = "token";
+    private String authorizeKey = "SECURITY:AUTHORIZE:";
+
+    private String tokenKey = "token";
 
     private List<String> projectUrl;
 
@@ -24,42 +26,48 @@ public class AuthenticationProperties {
 
     private String errorUrl = "/failure/authenticationFilter";
 
-    private Boolean authorityLock = false;
-
     private Boolean requestDataEnable = false;
 
     private String key;
 
-    public boolean isEnable() {
-        return enable;
+    public boolean isAuthEnable() {
+        return authEnable;
     }
 
-    public void setEnable(boolean enable) {
-        this.enable = enable;
+    public void setAuthEnable(boolean authEnable) {
+        this.authEnable = authEnable;
     }
 
-    public String getAuthenticate() {
-        return authenticate;
+    public Boolean getAuthorizeEnable() {
+        return authorizeEnable;
     }
 
-    public void setAuthenticate(String authenticate) {
-        this.authenticate = authenticate;
+    public void setAuthorizeEnable(Boolean authorizeEnable) {
+        this.authorizeEnable = authorizeEnable;
     }
 
-    public String getAuthorize() {
-        return authorize;
+    public String getAuthKey() {
+        return authKey;
     }
 
-    public void setAuthorize(String authorize) {
-        this.authorize = authorize;
+    public void setAuthKey(String authKey) {
+        this.authKey = authKey;
     }
 
-    public String getToken() {
-        return token;
+    public String getAuthorizeKey() {
+        return authorizeKey;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setAuthorizeKey(String authorizeKey) {
+        this.authorizeKey = authorizeKey;
+    }
+
+    public String getTokenKey() {
+        return tokenKey;
+    }
+
+    public void setTokenKey(String tokenKey) {
+        this.tokenKey = tokenKey;
     }
 
     public List<String> getProjectUrl() {
@@ -92,14 +100,6 @@ public class AuthenticationProperties {
 
     public void setErrorUrl(String errorUrl) {
         this.errorUrl = errorUrl;
-    }
-
-    public Boolean getAuthorityLock() {
-        return authorityLock;
-    }
-
-    public void setAuthorityLock(Boolean authorityLock) {
-        this.authorityLock = authorityLock;
     }
 
     public Boolean getRequestDataEnable() {
