@@ -6,14 +6,13 @@
 
     <groupId>io.github.landashu</groupId>
     <artifactId>easy-security</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
 
     <dependencies>
 
@@ -27,7 +26,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.13.3</version>
+            <version>2.14.1</version>
         </dependency>
 
         <dependency>
@@ -76,8 +75,8 @@
     <!--开发者信息-->
     <developers>
         <developer>
-            <id>xpc</id>
-            <name>xpc</name>
+            <id>bigUncle</id>
+            <name>bigUncle</name>
             <email>875730567@qq.com</email>
             <roles>
                 <role>Project Manager</role>
@@ -90,7 +89,6 @@
     <!--项目在github或其它托管平台的地址-->
     <scm>
         <connection>https://github.com/landashu/easy-security.git</connection>
-        <developerConnection></developerConnection>
         <url>https://github.com/landashu/easy-security</url>
     </scm>
 

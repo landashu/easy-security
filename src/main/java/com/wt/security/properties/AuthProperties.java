@@ -2,6 +2,7 @@ package com.wt.security.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -18,11 +19,11 @@ public class AuthProperties {
 
     private String tokenKey = "token";
 
-    private List<String> projectUrl;
+    private List<String> projectUrl = new ArrayList<>();
 
-    private List<String> specialUrl;
+    private List<String> specialUrl = new ArrayList<>();
 
-    private List<String> decryptUrl;
+    private List<String> decryptUrl = new ArrayList<>();
 
     private String errorUrl = "/failure/authenticationFilter";
 

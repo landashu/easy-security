@@ -1,6 +1,7 @@
 package com.wt.security.properties;
 
 
+import cn.hutool.core.util.ObjectUtil;
 import com.wt.security.code.FilterOrderCode;
 import com.wt.security.server.AuthSecurity;
 import com.wt.security.server.AuthorizeSecurity;
@@ -22,9 +23,13 @@ public class AuthAutoConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(AuthAutoConfiguration.class);
 
-    @Resource
     private AuthProperties authProperties;
-
+    public AuthAutoConfiguration(AuthProperties authProperties){
+        if(ObjectUtil.isNull(authProperties)){
+            authProperties = new AuthProperties();
+        }
+        this.authProperties = authProperties;
+    }
 
     @Bean
     public FilterRegistrationBean<SpecialPathFilter> specialPathFilter() {
