@@ -6,6 +6,6 @@ public interface AuthSecurity {
     Object getAuthUser(String key);
 
 
-    void renewAuth(String key);
+    default void renewAuth(String key){};
 
 }

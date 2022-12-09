@@ -13,11 +13,11 @@ public class AuthProperties {
 
     private Boolean authorizeEnable = false;
 
-    private String authKey = "SECURITY:AUTHENTICATE:";
+    private String authKey = "SECURITY:AUTH:";
 
     private String authorizeKey = "SECURITY:AUTHORIZE:";
 
-    private String tokenKey = "token";
+    private String tokenKey = "SECURITY:TOKEN";
 
     private List<String> projectUrl = new ArrayList<>();
 
