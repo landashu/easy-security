@@ -13,7 +13,9 @@ public class AuthProperties {
 
     private Boolean authorizeEnable = false;
 
-    private Boolean requestDataEnable = false;
+    private String authKey = "SECURITY:AUTHENTICATE:";
+
+    private String authorizeKey = "SECURITY:AUTHORIZE:";
 
     private String tokenKey = "token";
 
@@ -24,6 +26,8 @@ public class AuthProperties {
     private List<String> decryptUrl = new ArrayList<>();
 
     private String errorUrl = "/failure/authenticationFilter";
+
+    private Boolean requestDataEnable = false;
 
     private String key;
 
@@ -41,6 +45,22 @@ public class AuthProperties {
 
     public void setAuthorizeEnable(Boolean authorizeEnable) {
         this.authorizeEnable = authorizeEnable;
+    }
+
+    public String getAuthKey() {
+        return authKey;
+    }
+
+    public void setAuthKey(String authKey) {
+        this.authKey = authKey;
+    }
+
+    public String getAuthorizeKey() {
+        return authorizeKey;
+    }
+
+    public void setAuthorizeKey(String authorizeKey) {
+        this.authorizeKey = authorizeKey;
     }
 
     public String getTokenKey() {
