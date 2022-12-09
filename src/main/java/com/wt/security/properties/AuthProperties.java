@@ -17,7 +17,7 @@ public class AuthProperties {
 
     private String authorizeKey = "SECURITY:AUTHORIZE:";
 
-    private String tokenKey = "SECURITY:TOKEN";
+    private String tokenKey = "token";
 
     private List<String> projectUrl = new ArrayList<>();
 
