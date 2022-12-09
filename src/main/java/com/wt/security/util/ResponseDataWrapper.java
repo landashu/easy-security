@@ -5,13 +5,12 @@ import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wt.security.code.BasicCode;
 import com.wt.security.exp.impl.BasicException;
-import com.wt.security.properties.AuthenticationProperties;
+import com.wt.security.properties.AuthProperties;
 import org.apache.commons.codec.Charsets;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletOutputStream;
-import javax.servlet.ServletResponse;
 import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
@@ -21,7 +20,7 @@ import java.util.LinkedHashMap;
 
 public class ResponseDataWrapper extends HttpServletResponseWrapper {
 
-    private static final Log log = LogFactory.getLog(ResponseDataWrapper.class);
+    private static final Logger log = LoggerFactory.getLogger(ResponseDataWrapper.class);
 
     private ByteArrayOutputStream buffer = null;
     private ServletOutputStream out = null;
@@ -35,23 +34,16 @@ public class ResponseDataWrapper extends HttpServletResponseWrapper {
         writer = new PrintWriter(new OutputStreamWriter(buffer,Charsets.UTF_8.toString()));
     }
 
-    /**
-     * 重载父类获取outputstream的方法
-    **/
     @Override
     public ServletOutputStream getOutputStream()throws IOException {
         return out;
     }
-    /**
-     * 重载父类获取writer的方法
-    **/
+
     @Override
     public PrintWriter getWriter() throws UnsupportedEncodingException {
         return writer;
     }
-    /**
-     * 重载父类获取flushBuffer的方法
-    **/
+
     @Override
     public void flushBuffer()throws IOException{
         if(out!=null){
@@ -67,10 +59,8 @@ public class ResponseDataWrapper extends HttpServletResponseWrapper {
         buffer.reset();
     }
 
-    public void changeContent(HttpServletResponse response, AuthenticationProperties authenticationProperties, ObjectMapper mapper) throws IOException{
-        /**
-         * 将out、writer中的数据强制输出到WapperedResponse的buffer里面，否则取不到数据
-        **/
+    public void changeContent(HttpServletResponse response, AuthProperties authProperties, ObjectMapper mapper) throws IOException{
+
         flushBuffer();
         PrintWriter out = null;
         String data = null;
@@ -83,11 +73,10 @@ public class ResponseDataWrapper extends HttpServletResponseWrapper {
             if(StrUtil.isEmpty(data)){
                 return;
             }
-            // 返回值加密
             ResponseData<Object> responseData = mapper.readValue(data.trim(),ResponseData.class);
             ThreadLocalUtil.ThreadLocalEntity threadLocalEntity = ThreadLocalUtil.threadLocal.get();
             if(!ObjectUtil.isEmpty(responseData.getData()) && threadLocalEntity.getDecrypt()){
-                String obj = AesEncryptUtil.encrypt(mapper.writeValueAsString(responseData.getData()),authenticationProperties.getKey(),iv).trim();
+                String obj = AesEncryptUtil.encrypt(mapper.writeValueAsString(responseData.getData()), authProperties.getKey(),iv).trim();
                 if(StrUtil.isEmpty(obj)){
                     throw new BasicException(BasicCode.BASIC_CODE_99988);
                 }
@@ -121,7 +110,6 @@ public class ResponseDataWrapper extends HttpServletResponseWrapper {
     }
 
     private Object toString(Object obj,String key,String iv){
-        // TODO 转换 为 String 数据解密
         if(ObjectUtil.isEmpty(obj)){
             return obj;
         }
@@ -129,7 +117,6 @@ public class ResponseDataWrapper extends HttpServletResponseWrapper {
     }
 
     private Object toArray(Object obj,String key,String iv){
-        // TODO 转换 为 Array 数据解密
         return obj;
     }
 
@@ -146,9 +133,6 @@ public class ResponseDataWrapper extends HttpServletResponseWrapper {
     }
 
 
-    /**
-     * 内部类，对ServletOutputStream进行包装
-    **/
     private class WapperedOutputStream extends ServletOutputStream{
 
         private ByteArrayOutputStream bos=null;

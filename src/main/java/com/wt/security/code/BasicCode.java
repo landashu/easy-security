@@ -3,92 +3,30 @@ package com.wt.security.code;
 import cn.hutool.http.HttpStatus;
 import com.wt.security.exp.IErrorCode;
 
-/**
- * 异常 基础类
- * @Author big uncle
- * @Date 2019/11/26 15:32
-**/
+
 public enum BasicCode implements IErrorCode {
 
     /**
-     * 用户未登录
+     * 校验码
      */
     BASIC_CODE_401(HttpStatus.HTTP_UNAUTHORIZED, "未登录"),
-    /**
-     * 数据未找到
-     */
     BASIC_CODE_402(HttpStatus.HTTP_PAYMENT_REQUIRED, "数据未找到"),
-    /**
-     * 无操作权限
-     */
     BASIC_CODE_403(HttpStatus.HTTP_FORBIDDEN,"无操作权限"),
-
-    /**
-     * 不存在的接口
-     */
     BASIC_CODE_404(HttpStatus.HTTP_NOT_FOUND,"不存在的接口"),
-    /**
-     * 数据已存在
-     */
     BASIC_CODE_409(HttpStatus.HTTP_CONFLICT,"数据已存在"),
-    /**
-     * 系统内部错误
-     */
     BASIC_CODE_500(HttpStatus.HTTP_INTERNAL_ERROR,"系统内部错误"),
-    /**
-     * 加密失败
-     **/
     BASIC_CODE_99987(-99987,"数据解密失败"),
-    /**
-     * 加密失败
-     **/
     BASIC_CODE_99988(-99988,"数据加密失败"),
-    /**
-     * 公钥IV不能为空
-     **/
     BASIC_CODE_99989(-99989,"公钥(IV)不能为空"),
-    /**
-     * 私钥(KEY)不能为空
-     **/
     BASIC_CODE_99990(-99990,"私钥(KEY)不能为空"),
-    /**
-     * 数据解密异常
-     **/
     BASIC_CODE_99991(-99991,"特殊路径解析异常"),
-    /**
-     * 数据解密异常
-     **/
     BASIC_CODE_99992(-99992,"项目路径解析异常"),
-    /**
-     * 数据解密异常
-     **/
     BASIC_CODE_99993(-99993,"data数据解析异常"),
-    /**
-     * 数据解密异常
-     **/
     BASIC_CODE_99994(-99994,"数据解密异常"),
-    /**
-     * 不存在的接口
-     */
     BASIC_CODE_99995(-99995,"验证码不正确或已失效，请刷新验证码"),
-    /**
-     * 参数校验错误
-    **/
     BASIC_CODE_99996(-99996,"参数校验失败"),
-
-    /**
-     * 请求方式异常
-     */
     BASIC_CODE_99997(-99997,"不支持的请求方式"),
-
-    /**
-     * 参数列表不匹配
-     */
     BASIC_CODE_99998(-99998,"参数列表不匹配，或传参错误"),
-
-    /**
-     * 参数不能为空
-     */
     BASIC_CODE_99999(-99999,"参数不能为空"),
     ;
 

@@ -2,10 +2,6 @@ package com.wt.security.util;
 
 import com.wt.security.yapi.YApiRule;
 
-/**
- * @Author big uncle
- * @Date 2019/11/26 15:48
- **/
 public class RequestData<T,U> {
 
     @YApiRule(required = true)

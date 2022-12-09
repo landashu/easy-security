@@ -3,34 +3,31 @@ package com.wt.security.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wt.security.code.BasicCode;
 import com.wt.security.exp.impl.BasicException;
-import com.wt.security.properties.AuthenticationProperties;
+import com.wt.security.properties.AuthProperties;
 import com.wt.security.util.RequestDataWrapper;
 import com.wt.security.util.ResponseDataWrapper;
 import com.wt.security.util.ThreadLocalUtil;
 import org.apache.commons.codec.Charsets;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/**
- * @Author big uncle
- * @Date 2019/11/28 17:45
- **/
-public class DataFilter implements Filter {
 
-    private static final Log log = LogFactory.getLog(DataFilter.class);
-    private AuthenticationProperties authenticationProperties;
+public class RequestDataFilter implements Filter {
 
-    public AuthenticationProperties getAuthenticationProperties() {
-        return authenticationProperties;
+    private static final Logger log = LoggerFactory.getLogger(RequestDataFilter.class);
+    private AuthProperties authProperties;
+
+    public AuthProperties getAuthenticationProperties() {
+        return authProperties;
     }
 
-    public void setAuthenticationProperties(AuthenticationProperties authenticationProperties) {
-        this.authenticationProperties = authenticationProperties;
+    public void setAuthenticationProperties(AuthProperties authProperties) {
+        this.authProperties = authProperties;
     }
 
     private ObjectMapper mapper = new ObjectMapper();
@@ -45,21 +42,20 @@ public class DataFilter implements Filter {
             response.setCharacterEncoding(Charsets.UTF_8.toString());
             // 不是特殊路径，且开启了使用 RequestData功能
             ThreadLocalUtil.ThreadLocalEntity threadLocalEntity = ThreadLocalUtil.threadLocal.get();
-            if(!threadLocalEntity.getSpecial()
-                    && authenticationProperties.getRequestDataEnable()){
-                request = new RequestDataWrapper(request, authenticationProperties, mapper);
+            if(!threadLocalEntity.getSpecial()){
+                request = new RequestDataWrapper(request, authProperties, mapper);
                 ResponseDataWrapper responseDataWrapper = new ResponseDataWrapper(response);
                 filterChain.doFilter(request, responseDataWrapper);
-                responseDataWrapper.changeContent(response, authenticationProperties, mapper);
+                responseDataWrapper.changeContent(response, authProperties, mapper);
                 return;
             }
             filterChain.doFilter(request, servletResponse);
         }catch(BasicException basicException){
             log.error(basicException.getMsg());
-            ThreadLocalUtil.forward(request,response,authenticationProperties.getErrorUrl(),basicException);
+            ThreadLocalUtil.forward(request,response, authProperties.getErrorUrl(),basicException);
         }catch(Exception e){
             log.error(e.getMessage());
-            ThreadLocalUtil.forward(request,response,authenticationProperties.getErrorUrl(),BasicCode.BASIC_CODE_99993.getCode(),e.getMessage());
+            ThreadLocalUtil.forward(request,response, authProperties.getErrorUrl(),BasicCode.BASIC_CODE_99993.getCode(),e.getMessage());
         }
     }
 
