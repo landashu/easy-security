@@ -60,8 +60,7 @@ public class TokenLifeFilter implements Filter {
         if (StrUtil.isEmpty(token)) {
             throw new AuthenticationException(BasicCode.BASIC_CODE_401);
         }
-        String accessToken = authProperties.getAuthKey() + token;
-        authSecurity.renewAuth(accessToken);
+        authSecurity.renewAuth(token);
     }
 
 

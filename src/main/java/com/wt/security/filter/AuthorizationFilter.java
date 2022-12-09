@@ -64,8 +64,7 @@ public class AuthorizationFilter implements Filter {
         if (StrUtil.isEmpty(token)) {
             throw new AuthenticationException(BasicCode.BASIC_CODE_401);
         }
-        String accessToken = authProperties.getAuthorizeKey()+token;
-        List<String> list = authorizeSecurity.getAuthorizeUrl(accessToken);
+        List<String> list = authorizeSecurity.getAuthorizeUrl(token);
         if(CollectionUtil.isEmpty(list)){
             throw new AuthorizationException(BasicCode.BASIC_CODE_403);
         }
