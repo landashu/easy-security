@@ -15,19 +15,16 @@ public class ThreadLocalUtil {
 
 
     public static void forward(HttpServletRequest request, HttpServletResponse response, String errUrl, IErrorCode iErrorCode) throws ServletException, IOException {
-        threadLocal.remove();
         String url = errUrl + String.format(FilterConst.PARAMES, iErrorCode.getCode(),iErrorCode.getMsg());
         request.getRequestDispatcher(url).forward(request,response);
     }
 
     public static void forward(HttpServletRequest request, HttpServletResponse response, String errUrl, BasicException basicException) throws ServletException, IOException {
-        threadLocal.remove();
         String url = errUrl + String.format(FilterConst.PARAMES, basicException.getCode(),basicException.getMsg());
         request.getRequestDispatcher(url).forward(request,response);
     }
 
     public static void forward(HttpServletRequest request, HttpServletResponse response, String errUrl, Integer code,String msg) throws ServletException, IOException {
-        threadLocal.remove();
         String url = errUrl + String.format(FilterConst.PARAMES, code, msg);
         request.getRequestDispatcher(url).forward(request,response);
     }

@@ -65,12 +65,8 @@ public class AuthenticationFilter implements Filter {
         if (StrUtil.isEmpty(token)) {
             throw new AuthenticationException(BasicCode.BASIC_CODE_401);
         }
-        Object obj = null;
         String accessToken = authProperties.getAuthKey() + token;
-        obj = httpServletRequest.getSession().getAttribute(accessToken);
-        if(ObjectUtil.isEmpty(obj)){
-            obj = authSecurity.getAuthUser(accessToken);
-        }
+        Object obj = authSecurity.getAuthUser(accessToken);
         if(ObjectUtil.isEmpty(obj)){
             throw new AuthenticationException(BasicCode.BASIC_CODE_401);
         }

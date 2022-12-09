@@ -45,6 +45,8 @@ public class SpecialPathFilter implements Filter {
         } catch(Exception e){
             log.error(e.getMessage());
             ThreadLocalUtil.forward(request,response, authProperties.getErrorUrl(),BasicCode.BASIC_CODE_99991.getCode(),e.getMessage());
+        }finally {
+            ThreadLocalUtil.threadLocal.remove();
         }
     }
 

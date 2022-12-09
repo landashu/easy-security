@@ -6,7 +6,7 @@
 
     <groupId>io.github.landashu</groupId>
     <artifactId>easy-security</artifactId>
-    <version>1.2</version>
+    <version>1.4</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -89,6 +89,7 @@
     <!--项目在github或其它托管平台的地址-->
     <scm>
         <connection>https://github.com/landashu/easy-security.git</connection>
+        <developerConnection></developerConnection>
         <url>https://github.com/landashu/easy-security</url>
     </scm>
 
@@ -252,11 +253,11 @@
             <distributionManagement>
                 <snapshotRepository>
                     <!--注意,此id必须与setting.xml中指定的一致-->
-                    <id>ossrh</id>
+                    <id>release</id>
                     <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
                 </snapshotRepository>
                 <repository>
-                    <id>ossrh</id>
+                    <id>release</id>
                     <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
                 </repository>
             </distributionManagement>
