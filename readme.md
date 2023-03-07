@@ -53,8 +53,8 @@ public class AuthConfig implements AuthSecurity, AuthorizeSecurity {
 ```
 // RequestData<T,U> 第一个参数为前端所传参数，第二个为后端会获取到的用户数据
 @PostMapping("/login")
-public ResponseData<SysUserVO> Login(@RequestBody RequestData<SysUserLoginDTO, SysUserVO> requestData, HttpServletRequest req) {
-    return sysUserService.Login(requestData,req);
+public ResponseData<SysUserVO> Login(@RequestBody RequestData<SysUserLoginDTO, SysUserVO> requestData) {
+    return sysUserService.Login(requestData);
 }
 
 requestData.getData() // 获取前端传参
