@@ -60,3 +60,11 @@ public ResponseData<SysUserVO> Login(@RequestBody RequestData<SysUserLoginDTO, S
 requestData.getData() // 获取前端传参
 requestData.getUser() // 获取操作用户
 ```
+
+### 注意事项
+我们没有遵守 RESTful API的设计理念，我们认为开发应该是高效的，简单的，统一的一个格式，前后端尽量用最少最简单的规范和方式解决开发问题，就像工具的初衷就是为了方便。
+所以我们所有的请求定义必须是POST请求，无论你是GET、PUT、DELETE，使用POST即可完成，当然你也可以继续使用RESTful API的规范，只需要在配置文件中设置如下：
+```
+request-data-enable: false
+```
+意思为不会为你把请求封装为一个RequestData对象，就可以在接口中描述你自己的规范。
