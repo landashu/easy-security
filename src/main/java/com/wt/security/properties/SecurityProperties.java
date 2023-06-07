@@ -4,6 +4,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 @ConfigurationProperties(prefix = "easy.security")
@@ -13,18 +15,28 @@ public class SecurityProperties {
 
     private Boolean authorizeEnable = false;
 
-    private String tokenKey = "token";
-
-    private List<String> projectUrl = new ArrayList<>();
-
-    private List<String> specialUrl = new ArrayList<>();
-
-    private List<String> decryptUrl = new ArrayList<>();
-
-    private String errorUrl = "/failure/authenticationFilter";
-
     private Boolean requestDataEnable = false;
 
+    /**
+     * request.header(key)
+     */
+    private String tokenKey = "token";
+    /**
+     * 项目路径
+     */
+    private List<String> projectUrl = new ArrayList<>();
+    /**
+     * 特殊路径
+     */
+    private List<String> specialUrl = new ArrayList<>();
+    /**
+     * 解密路径
+     */
+    private List<String> decryptUrl = new ArrayList<>();
+    /**
+     * 发生异常跳转地址
+     */
+    private String errorUrl = "/failure/authenticationFilter";
     /**
      * 长度16位的字母数字组合
      */
@@ -101,4 +113,6 @@ public class SecurityProperties {
     public void setSecretKey(String secretKey) {
         this.secretKey = secretKey;
     }
+
+
 }
