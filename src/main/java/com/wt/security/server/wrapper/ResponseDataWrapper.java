@@ -1,11 +1,19 @@
-package com.wt.security.util;
+package com.wt.security.server.wrapper;
 
+import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.SecureUtil;
+import cn.hutool.crypto.symmetric.AES;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wt.security.code.BasicCode;
 import com.wt.security.exp.impl.BasicException;
-import com.wt.security.properties.AuthProperties;
+import com.wt.security.properties.SecurityProperties;
+import com.wt.security.server.EasySecurityServer;
+import com.wt.security.server.encryption.CiphertextServer;
+import com.wt.security.server.encryption.impl.AesEncryptServer;
+import com.wt.security.util.ResponseData;
+import com.wt.security.util.ThreadLocalUtil;
 import org.apache.commons.codec.Charsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,13 +33,18 @@ public class ResponseDataWrapper extends HttpServletResponseWrapper {
     private ByteArrayOutputStream buffer = null;
     private ServletOutputStream out = null;
     private PrintWriter writer = null;
-
-    public ResponseDataWrapper(HttpServletResponse response) throws IOException {
+    private HttpServletResponse response;
+    private CiphertextServer ciphertextServer = new AesEncryptServer();
+    private ObjectMapper mapper = new ObjectMapper();
+    private SecurityProperties securityProperties;
+    public ResponseDataWrapper(HttpServletResponse response,SecurityProperties securityProperties) throws IOException {
         super(response);
+        this.response = response;
+        this.securityProperties = securityProperties;
         //真正存储数据的流
         buffer = new ByteArrayOutputStream();
         out = new WapperedOutputStream(buffer);
-        writer = new PrintWriter(new OutputStreamWriter(buffer,Charsets.UTF_8.toString()));
+        writer = new PrintWriter(new OutputStreamWriter(buffer, Charsets.UTF_8));
     }
 
     @Override
@@ -59,16 +72,15 @@ public class ResponseDataWrapper extends HttpServletResponseWrapper {
         buffer.reset();
     }
 
-    public void changeContent(HttpServletResponse response, AuthProperties authProperties, ObjectMapper mapper) throws IOException{
-
+    public void changeContent() throws IOException{
         flushBuffer();
         PrintWriter out = null;
         String data = null;
         try {
-            data = buffer.toString(Charsets.UTF_8.toString());
+            data = buffer.toString(Charsets.UTF_8);
             out = response.getWriter();
-            String iv = AesEncryptUtil.getRandomString(16);
-            response.setHeader("iv",iv);
+            String iv = ciphertextServer.getIV();
+            response.setHeader(CiphertextServer.IV,iv);
             response.setCharacterEncoding(Charsets.UTF_8.toString());
             if(StrUtil.isEmpty(data)){
                 return;
@@ -76,7 +88,11 @@ public class ResponseDataWrapper extends HttpServletResponseWrapper {
             ResponseData<Object> responseData = mapper.readValue(data.trim(),ResponseData.class);
             ThreadLocalUtil.ThreadLocalEntity threadLocalEntity = ThreadLocalUtil.threadLocal.get();
             if(!ObjectUtil.isEmpty(responseData.getData()) && threadLocalEntity.getDecrypt()){
-                String obj = AesEncryptUtil.encrypt(mapper.writeValueAsString(responseData.getData()), authProperties.getKey(),iv).trim();
+                String obj = ciphertextServer.encryption(
+                        mapper.writeValueAsString(responseData.getData()),
+                        securityProperties.getSecretKey(),
+                        iv
+                ).trim();
                 if(StrUtil.isEmpty(obj)){
                     throw new BasicException(BasicCode.BASIC_CODE_99988);
                 }
@@ -113,7 +129,7 @@ public class ResponseDataWrapper extends HttpServletResponseWrapper {
         if(ObjectUtil.isEmpty(obj)){
             return obj;
         }
-        return AesEncryptUtil.encrypt(obj.toString(),key,iv);
+        return ciphertextServer.encryption(obj.toString(),key,iv);
     }
 
     private Object toArray(Object obj,String key,String iv){
@@ -126,7 +142,7 @@ public class ResponseDataWrapper extends HttpServletResponseWrapper {
             Object ov = linkedHashMap.get(i);
             if(!ObjectUtil.isEmpty(ov)) {
                 String value = String.valueOf(ov).trim();
-                linkedHashMap.put(i, AesEncryptUtil.encrypt(value,key,iv).trim());
+                linkedHashMap.put(i, ciphertextServer.encryption(value,key,iv).trim());
             }
         });
         return linkedHashMap;

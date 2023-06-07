@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 
-public class PathRuleCheck {
+public class PathCheckUtil {
 
     private static final String RULE_0 = "**";
 

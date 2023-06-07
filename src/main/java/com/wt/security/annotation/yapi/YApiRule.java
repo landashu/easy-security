@@ -1,4 +1,4 @@
-package com.wt.security.yapi;
+package com.wt.security.annotation.yapi;
 
 
 import java.lang.annotation.*;

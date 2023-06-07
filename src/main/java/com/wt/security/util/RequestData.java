@@ -1,6 +1,6 @@
 package com.wt.security.util;
 
-import com.wt.security.yapi.YApiRule;
+import com.wt.security.annotation.yapi.YApiRule;
 
 public class RequestData<T,U> {
 

@@ -5,8 +5,9 @@ import cn.hutool.core.util.StrUtil;
 import com.wt.security.code.BasicCode;
 import com.wt.security.exp.impl.AuthenticationException;
 import com.wt.security.exp.impl.BasicException;
-import com.wt.security.properties.AuthProperties;
-import com.wt.security.server.AuthSecurity;
+import com.wt.security.properties.SecurityProperties;
+import com.wt.security.server.EasySecurityServer;
+import com.wt.security.server.auth.AuthorizeServer;
 import com.wt.security.util.ThreadLocalUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,23 +22,15 @@ public class AuthenticationFilter implements Filter {
 
     private static final Logger log = LoggerFactory.getLogger(AuthenticationFilter.class);
 
-    private AuthProperties authProperties;
-    private AuthSecurity authSecurity;
+    private SecurityProperties securityProperties;
+    private EasySecurityServer easySecurityServer;
 
-    public AuthProperties getAuthenticationProperties() {
-        return authProperties;
+    public void setAuthenticationProperties(SecurityProperties securityProperties) {
+        this.securityProperties = securityProperties;
     }
 
-    public void setAuthenticationProperties(AuthProperties authProperties) {
-        this.authProperties = authProperties;
-    }
-
-    public AuthSecurity getAuthenticationServerSource() {
-        return authSecurity;
-    }
-
-    public void setAuthenticationServerSource(AuthSecurity authSecurity) {
-        this.authSecurity = authSecurity;
+    public void setAuthenticationServerSource(EasySecurityServer easySecurityServer) {
+        this.easySecurityServer = easySecurityServer;
     }
 
     @Override
@@ -55,18 +48,17 @@ public class AuthenticationFilter implements Filter {
         } catch (BasicException e) {
             // 跳转至失败处理器
             log.error(e.getMsg());
-            ThreadLocalUtil.forward(request,response, authProperties.getErrorUrl(),e);
+            ThreadLocalUtil.forward(request,response, securityProperties.getErrorUrl(),e);
         }
     }
 
 
     public Object getUser(HttpServletRequest httpServletRequest) throws BasicException {
-        String token = httpServletRequest.getHeader(authProperties.getTokenKey());
+        String token = httpServletRequest.getHeader(securityProperties.getTokenKey());
         if (StrUtil.isEmpty(token)) {
             throw new AuthenticationException(BasicCode.BASIC_CODE_401);
         }
-        String accessToken = authProperties.getAuthKey() + token;
-        Object obj = authSecurity.getAuthUser(accessToken);
+        Object obj = easySecurityServer.getAuthUser(token);
         if(ObjectUtil.isEmpty(obj)){
             throw new AuthenticationException(BasicCode.BASIC_CODE_401);
         }

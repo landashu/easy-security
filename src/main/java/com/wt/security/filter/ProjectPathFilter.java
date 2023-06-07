@@ -2,8 +2,8 @@ package com.wt.security.filter;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.wt.security.code.BasicCode;
-import com.wt.security.properties.AuthProperties;
-import com.wt.security.util.PathRuleCheck;
+import com.wt.security.properties.SecurityProperties;
+import com.wt.security.util.PathCheckUtil;
 import com.wt.security.util.ThreadLocalUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,14 +18,10 @@ import java.util.List;
 public class ProjectPathFilter implements Filter {
 
     private static final Logger log = LoggerFactory.getLogger(ProjectPathFilter.class);
-    private AuthProperties authProperties;
+    private SecurityProperties securityProperties;
 
-    public AuthProperties getAuthenticationProperties() {
-        return authProperties;
-    }
-
-    public void setAuthenticationProperties(AuthProperties authProperties) {
-        this.authProperties = authProperties;
+    public void setAuthenticationProperties(SecurityProperties securityProperties) {
+        this.securityProperties = securityProperties;
     }
 
 
@@ -35,15 +31,15 @@ public class ProjectPathFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         try {
             ThreadLocalUtil.ThreadLocalEntity threadLocalEntity = ThreadLocalUtil.threadLocal.get();
-            List<String> urlFilter = authProperties.getProjectUrl();
+            List<String> urlFilter = securityProperties.getProjectUrl();
             if(!CollectionUtil.isEmpty(urlFilter)){
                 String url = request.getRequestURI();
-                PathRuleCheck.pathMatch(urlFilter,url,threadLocalEntity::setProject);
+                PathCheckUtil.pathMatch(urlFilter,url,threadLocalEntity::setProject);
             }
             filterChain.doFilter(request, response);
         } catch(Exception e){
             log.error(e.getMessage());
-            ThreadLocalUtil.forward(request,response, authProperties.getErrorUrl(),BasicCode.BASIC_CODE_99992.getCode(),e.getMessage());
+            ThreadLocalUtil.forward(request,response, securityProperties.getErrorUrl(),BasicCode.BASIC_CODE_99992.getCode(),e.getMessage());
         }
     }
 

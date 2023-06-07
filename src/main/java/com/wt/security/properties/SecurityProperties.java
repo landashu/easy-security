@@ -6,16 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@ConfigurationProperties(prefix = "security")
-public class AuthProperties {
+@ConfigurationProperties(prefix = "easy.security")
+public class SecurityProperties {
 
     private boolean authEnable = false;
 
     private Boolean authorizeEnable = false;
-
-    private String authKey = "SECURITY:AUTH:";
-
-    private String authorizeKey = "SECURITY:AUTHORIZE:";
 
     private String tokenKey = "token";
 
@@ -29,7 +25,10 @@ public class AuthProperties {
 
     private Boolean requestDataEnable = false;
 
-    private String key;
+    /**
+     * 长度16位的字母数字组合
+     */
+    private String secretKey;
 
     public boolean isAuthEnable() {
         return authEnable;
@@ -45,22 +44,6 @@ public class AuthProperties {
 
     public void setAuthorizeEnable(Boolean authorizeEnable) {
         this.authorizeEnable = authorizeEnable;
-    }
-
-    public String getAuthKey() {
-        return authKey;
-    }
-
-    public void setAuthKey(String authKey) {
-        this.authKey = authKey;
-    }
-
-    public String getAuthorizeKey() {
-        return authorizeKey;
-    }
-
-    public void setAuthorizeKey(String authorizeKey) {
-        this.authorizeKey = authorizeKey;
     }
 
     public String getTokenKey() {
@@ -111,11 +94,11 @@ public class AuthProperties {
         this.requestDataEnable = requestDataEnable;
     }
 
-    public String getKey() {
-        return key;
+    public String getSecretKey() {
+        return secretKey;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setSecretKey(String secretKey) {
+        this.secretKey = secretKey;
     }
 }

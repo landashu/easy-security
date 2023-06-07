@@ -1,14 +1,14 @@
 package com.wt.security.filter;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.wt.security.code.BasicCode;
 import com.wt.security.exp.impl.AuthenticationException;
 import com.wt.security.exp.impl.AuthorizationException;
 import com.wt.security.exp.impl.BasicException;
-import com.wt.security.properties.AuthProperties;
-import com.wt.security.server.AuthorizeSecurity;
+import com.wt.security.properties.SecurityProperties;
+import com.wt.security.server.EasySecurityServer;
+import com.wt.security.server.auth.AuthorizeServer;
 import com.wt.security.util.ThreadLocalUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,23 +24,15 @@ public class AuthorizationFilter implements Filter {
 
     private static final Logger log = LoggerFactory.getLogger(AuthorizationFilter.class);
 
-    private AuthorizeSecurity authorizeSecurity;
-    private AuthProperties authProperties;
+    private EasySecurityServer easySecurityServer;
+    private SecurityProperties securityProperties;
 
-    public AuthorizeSecurity getAuthorizationServerSource() {
-        return authorizeSecurity;
+    public void setAuthorizationServerSource(EasySecurityServer easySecurityServer) {
+        this.easySecurityServer = easySecurityServer;
     }
 
-    public void setAuthorizationServerSource(AuthorizeSecurity authorizeSecurity) {
-        this.authorizeSecurity = authorizeSecurity;
-    }
-
-    public AuthProperties getAuthenticationProperties() {
-        return authProperties;
-    }
-
-    public void setAuthenticationProperties(AuthProperties authProperties) {
-        this.authProperties = authProperties;
+    public void setAuthenticationProperties(SecurityProperties securityProperties) {
+        this.securityProperties = securityProperties;
     }
 
     @Override
@@ -55,17 +47,16 @@ public class AuthorizationFilter implements Filter {
             filterChain.doFilter(request, response);
         } catch (BasicException e) {
             log.error(e.getMsg());
-            ThreadLocalUtil.forward(request,response, authProperties.getErrorUrl(),e);
+            ThreadLocalUtil.forward(request,response, securityProperties.getErrorUrl(),e);
         }
     }
 
     private void authorize(HttpServletRequest request) throws BasicException {
-        String token = request.getHeader(authProperties.getTokenKey());
+        String token = request.getHeader(securityProperties.getTokenKey());
         if (StrUtil.isEmpty(token)) {
             throw new AuthenticationException(BasicCode.BASIC_CODE_401);
         }
-        String accessToken = authProperties.getAuthorizeKey()+token;
-        List<String> list = authorizeSecurity.getAuthorizeUrl(accessToken);
+        List<String> list = easySecurityServer.getAuthorizeUrl(token);
         if(CollectionUtil.isEmpty(list)){
             throw new AuthorizationException(BasicCode.BASIC_CODE_403);
         }

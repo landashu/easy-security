@@ -1,4 +1,4 @@
-package com.wt.security.util;
+package com.wt.security.server.wrapper;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -6,7 +6,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wt.security.code.BasicCode;
 import com.wt.security.exp.impl.BasicException;
-import com.wt.security.properties.AuthProperties;
+import com.wt.security.properties.SecurityProperties;
+import com.wt.security.server.EasySecurityServer;
+import com.wt.security.server.encryption.CiphertextServer;
+import com.wt.security.server.encryption.impl.AesEncryptServer;
+import com.wt.security.util.RequestData;
+import com.wt.security.util.ThreadLocalUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,9 +28,9 @@ public class RequestDataWrapper extends HttpServletRequestWrapper {
 
     private static final Logger log = LoggerFactory.getLogger(RequestDataWrapper.class);
     private String body;
-
-    public RequestDataWrapper(HttpServletRequest request, AuthProperties authProperties,
-                              ObjectMapper mapper) throws Exception {
+    private CiphertextServer ciphertextServer = new AesEncryptServer();
+    private ObjectMapper mapper = new ObjectMapper();
+    public RequestDataWrapper(HttpServletRequest request, SecurityProperties securityProperties) throws Exception {
         super(request);
         body = getBodyContent(request);
         RequestData<Object,Object> requestData = new RequestData<Object,Object>();
@@ -37,10 +42,10 @@ public class RequestDataWrapper extends HttpServletRequestWrapper {
             ThreadLocalUtil.ThreadLocalEntity threadLocalEntity = ThreadLocalUtil.threadLocal.get();
             requestData.setUser(threadLocalEntity.getUser());
             if(threadLocalEntity.getDecrypt()) {
-                decrypt(requestData,request, authProperties.getKey(),mapper);
+                decrypt(requestData,request, securityProperties.getSecretKey());
             }
         }
-        String token = request.getHeader(authProperties.getTokenKey());
+        String token = request.getHeader(securityProperties.getTokenKey());
         requestData.setToken(token);
         body = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(requestData);
     }
@@ -88,17 +93,16 @@ public class RequestDataWrapper extends HttpServletRequestWrapper {
         return sb.toString();
     }
 
-    private void decrypt(RequestData data,HttpServletRequest request,
-                         String key,ObjectMapper mapper) throws BasicException, JsonProcessingException {
+    private void decrypt(RequestData data,HttpServletRequest request, String key) throws BasicException, JsonProcessingException {
         Object obj = data.getData();
-        String iv = request.getHeader(AesEncryptUtil.IV);
+        String iv = request.getHeader(CiphertextServer.IV);
         if(StrUtil.isEmpty(iv)){
             throw new BasicException(BasicCode.BASIC_CODE_99989);
         }
         if(ObjectUtil.isEmpty(obj)){
             return;
         }
-        String json = AesEncryptUtil.desEncrypt(mapper.writeValueAsString(obj),key,iv).trim();
+        String json = ciphertextServer.decryption(mapper.writeValueAsString(obj),key,iv).trim();
         if(StrUtil.isEmpty(json)){
             throw new BasicException(BasicCode.BASIC_CODE_99987);
         }
