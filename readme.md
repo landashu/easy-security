@@ -59,7 +59,7 @@ public class AuthConfig implements EasySecurityServer {
 ```
 3. 获取用户
 ```
-// RequestData<T,U> 第一个参数为前端所传参数，第二个为后端会获取到的用户数据
+// Req<T,U> 第一个参数为前端所传参数，第二个为后端会获取到的用户数据
 @PostMapping("/login")
 public ResponseData<SysUserVO> Login(@RequestBody Req<SysUserLoginDTO, SysUserVO> request) {
     return sysUserService.Login(request);
