@@ -1,14 +1,14 @@
-package com.wt.security.util;
+package com.wt.security.domain;
 
 import com.wt.security.annotation.yapi.YApiRule;
 
-public class RequestData<T,U> {
+public class Req<T,U> {
 
     @YApiRule(required = true)
     private T data;
 
     @YApiRule(hide = true)
-    private U User;
+    private U user;
 
     @YApiRule(hide = true)
     private String token;
@@ -22,11 +22,11 @@ public class RequestData<T,U> {
     }
 
     public U getUser() {
-        return User;
+        return user;
     }
 
     public void setUser(U user) {
-        User = user;
+        this.user = user;
     }
 
     public String getToken() {

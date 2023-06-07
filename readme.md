@@ -65,8 +65,8 @@ public ResponseData<SysUserVO> Login(@RequestBody RequestData<SysUserLoginDTO, S
     return sysUserService.Login(request);
 }
 
-requestData.getData() // 获取前端传参
-requestData.getUser() // 获取操作用户
+req.getData() // 获取前端传参
+req.getUser() // 获取操作用户
 ```
 
 ### Yapi规则描述

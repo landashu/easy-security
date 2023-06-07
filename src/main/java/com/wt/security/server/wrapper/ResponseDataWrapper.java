@@ -1,18 +1,14 @@
 package com.wt.security.server.wrapper;
 
-import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.crypto.SecureUtil;
-import cn.hutool.crypto.symmetric.AES;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wt.security.code.BasicCode;
 import com.wt.security.exp.impl.BasicException;
 import com.wt.security.properties.SecurityProperties;
-import com.wt.security.server.EasySecurityServer;
 import com.wt.security.server.encryption.CiphertextServer;
 import com.wt.security.server.encryption.impl.AesEncryptServer;
-import com.wt.security.util.ResponseData;
+import com.wt.security.domain.Rep;
 import com.wt.security.util.ThreadLocalUtil;
 import org.apache.commons.codec.Charsets;
 import org.slf4j.Logger;
@@ -85,20 +81,20 @@ public class ResponseDataWrapper extends HttpServletResponseWrapper {
             if(StrUtil.isEmpty(data)){
                 return;
             }
-            ResponseData<Object> responseData = mapper.readValue(data.trim(),ResponseData.class);
+            Rep<Object> rep = mapper.readValue(data.trim(), Rep.class);
             ThreadLocalUtil.ThreadLocalEntity threadLocalEntity = ThreadLocalUtil.threadLocal.get();
-            if(!ObjectUtil.isEmpty(responseData.getData()) && threadLocalEntity.getDecrypt()){
+            if(!ObjectUtil.isEmpty(rep.getData()) && threadLocalEntity.getDecrypt()){
                 String obj = ciphertextServer.encryption(
-                        mapper.writeValueAsString(responseData.getData()),
+                        mapper.writeValueAsString(rep.getData()),
                         securityProperties.getSecretKey(),
                         iv
                 ).trim();
                 if(StrUtil.isEmpty(obj)){
                     throw new BasicException(BasicCode.BASIC_CODE_99988);
                 }
-                responseData.setData(obj);
+                rep.setData(obj);
             }
-            data = mapper.writeValueAsString(responseData);
+            data = mapper.writeValueAsString(rep);
         }catch (Exception e){
             e.getMessage();
             log.error(e.getMessage());
@@ -111,8 +107,8 @@ public class ResponseDataWrapper extends HttpServletResponseWrapper {
         }
     }
 
-    private Object encrypt(ResponseData<Object> responseData,String key,String iv){
-        Object obj = responseData.getData();
+    private Object encrypt(Rep<Object> rep, String key, String iv){
+        Object obj = rep.getData();
         if(obj.getClass().equals(String.class)){
             obj = toString(obj,key,iv);
         }

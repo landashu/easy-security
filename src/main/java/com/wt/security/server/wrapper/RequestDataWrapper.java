@@ -7,10 +7,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wt.security.code.BasicCode;
 import com.wt.security.exp.impl.BasicException;
 import com.wt.security.properties.SecurityProperties;
-import com.wt.security.server.EasySecurityServer;
 import com.wt.security.server.encryption.CiphertextServer;
 import com.wt.security.server.encryption.impl.AesEncryptServer;
-import com.wt.security.util.RequestData;
+import com.wt.security.domain.Req;
 import com.wt.security.util.ThreadLocalUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,21 +32,21 @@ public class RequestDataWrapper extends HttpServletRequestWrapper {
     public RequestDataWrapper(HttpServletRequest request, SecurityProperties securityProperties) throws Exception {
         super(request);
         body = getBodyContent(request);
-        RequestData<Object,Object> requestData = new RequestData<Object,Object>();
+        Req<Object,Object> req = new Req<Object,Object>();
         if(!StrUtil.isEmpty(body)) {
-            requestData = mapper.readValue(body, RequestData.class);
-            if (ObjectUtil.isEmpty(requestData)) {
-                requestData = new RequestData<Object,Object>();
+            req = mapper.readValue(body, Req.class);
+            if (ObjectUtil.isEmpty(req)) {
+                req = new Req<Object,Object>();
             }
             ThreadLocalUtil.ThreadLocalEntity threadLocalEntity = ThreadLocalUtil.threadLocal.get();
-            requestData.setUser(threadLocalEntity.getUser());
+            req.setUser(threadLocalEntity.getUser());
             if(threadLocalEntity.getDecrypt()) {
-                decrypt(requestData,request, securityProperties.getSecretKey());
+                decrypt(req,request, securityProperties.getSecretKey());
             }
         }
         String token = request.getHeader(securityProperties.getTokenKey());
-        requestData.setToken(token);
-        body = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(requestData);
+        req.setToken(token);
+        body = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(req);
     }
 
     @Override
@@ -93,7 +92,7 @@ public class RequestDataWrapper extends HttpServletRequestWrapper {
         return sb.toString();
     }
 
-    private void decrypt(RequestData data,HttpServletRequest request, String key) throws BasicException, JsonProcessingException {
+    private void decrypt(Req data, HttpServletRequest request, String key) throws BasicException, JsonProcessingException {
         Object obj = data.getData();
         String iv = request.getHeader(CiphertextServer.IV);
         if(StrUtil.isEmpty(iv)){
