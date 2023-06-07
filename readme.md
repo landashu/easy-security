@@ -49,13 +49,6 @@ public class AuthConfig implements EasySecurityServer {
         return null;
     }
 
-    // 描述用户更新认证（续期），可以用token从redis获取，自己实现
-    // 每次请求都会执行该方法，所以建议时间累加即可
-    @Override
-    public void renewAuth(String token) {
-
-    }
-
     // 描述用户更获取权限集，可以用token从redis获取，自己实现
     // 也可以使用JWT自己解析数据
     @Override
