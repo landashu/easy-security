@@ -15,6 +15,10 @@ public enum BasicCode implements IErrorCode {
     BASIC_CODE_404(HttpStatus.HTTP_NOT_FOUND,"不存在的接口"),
     BASIC_CODE_409(HttpStatus.HTTP_CONFLICT,"数据已存在"),
     BASIC_CODE_500(HttpStatus.HTTP_INTERNAL_ERROR,"系统内部错误"),
+
+    BASIC_CODE_99984(-99984,"您已被列为黑名单"),
+    BASIC_CODE_99985(-99985,"登录会话过期"),
+    BASIC_CODE_99986(-99986,"密钥验证错误"),
     BASIC_CODE_99987(-99987,"数据解密失败"),
     BASIC_CODE_99988(-99988,"数据加密失败"),
     BASIC_CODE_99989(-99989,"公钥(IV)不能为空"),

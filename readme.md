@@ -12,6 +12,7 @@ easy-security 结合了Yapi的使用，如果你使用Yapi需要在自己的项�
 * 认证拦截
 * 权限校验
 * 用户获取
+* 黑名单
 * 密文传输(内置AES加密算法)
 
 ### 使用
@@ -27,15 +28,19 @@ easy
     request-data-enable: true
     # 项目路径，不会被认证
     project-url: 
-      - "/sysUser/login"
-      - "/goods/getIndex"
-      - "/goods/getGoodsInfo"
+      - /sysUser/login
+      - /goods/getIndex
+      - /goods/getGoodsInfo
     # 需要解密的路径
     decrypt-url: ""
     # 特殊路径，不受认证鉴权以及RequestData的影响
-    special-url: "/oss/**"
+    special-url: 
+      - /oss/**
+    # 黑名单
+    black-list: 
+      - 192.168.148.42
+      - 192.168.148.41
 ```
-
 2. 实现获取方式
 ```
 @Service
@@ -44,14 +49,14 @@ public class AuthConfig implements EasySecurityServer {
     
     // 描述用户获取的方式，可以用token从redis获取，自己实现，也可以是JWT自己解析
     @Override
-    public Object getAuthUser(String token) {
+    public Object getAuthUser(String token) throws BasicException{
         return null;
     }
 
     // 描述用户更获取权限集，可以用token从redis获取，自己实现
     // 也可以使用JWT自己解析数据
     @Override
-    public List<String> getAuthorizeUrl(String token) {
+    public List<String> getAuthorizeUrl(String token) throws BasicException{
         return null;
     }
 
@@ -59,16 +64,34 @@ public class AuthConfig implements EasySecurityServer {
 ```
 3. 获取用户
 ```
-// Req<T,U> 第一个参数为前端所传参数，第二个为后端会获取到的用户数据
+// Req<T,U> 第一个参数为前端所传参数，第二个为后端会获取到的用户数据，只有登录了才能获取到
 @PostMapping("/login")
-public ResponseData<SysUserVO> Login(@RequestBody Req<SysUserLoginDTO, SysUserVO> request) {
-    return sysUserService.Login(request);
+public Rep<User> login(){
+    User user = new User();
+    user.setId("1");
+    user.setName("张三");
+    String token = JWT.create()
+            .setPayload("id",1)
+            .setPayload("name","张三")
+            .setPayload("exp", System.currentTimeMillis()+60*60*1000)
+            .setPayload("url", Arrays.asList("/test/abc"))
+            .setKey(key.getBytes())
+            .sign();
+    user.setToken(token);
+    return Rep.ok(user);
+}
+
+@PostMapping("/abc")
+public Rep<String> test(@RequestBody Req<Object,User> req){
+    String str = req.getData().toString();
+    User user = req.getUser();
+    return Rep.ok(user.getName());
 }
 
 req.getData() // 获取前端传参
 req.getUser() // 获取操作用户
 ```
-
+完整的测试案例可以参考 https://gitee.com/landashu/study/tree/master/study-easySecurity
 ### Yapi规则描述
 在项目中的 application.yml 文件里面添加如下：
 ```

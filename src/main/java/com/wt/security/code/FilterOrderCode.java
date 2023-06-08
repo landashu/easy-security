@@ -7,6 +7,7 @@ public enum FilterOrderCode {
     /**
      * 过滤去顺序
      */
+    FILTER_ORDER_CODE_90(90, "黑名单拦截"),
     FILTER_ORDER_CODE_100(100, "特殊路径拦截"),
     FILTER_ORDER_CODE_200(200, "项目路径拦截"),
     FILTER_ORDER_CODE_210(210, "解密路径拦截"),

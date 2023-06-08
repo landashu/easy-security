@@ -1,6 +1,7 @@
 package com.wt.security.properties;
 
 
+import cn.hutool.core.net.NetUtil;
 import com.wt.security.code.FilterOrderCode;
 import com.wt.security.server.EasySecurityServer;
 import com.wt.security.filter.*;
@@ -21,6 +22,23 @@ public class SecurityAutoConfiguration {
     private static final Logger log = LoggerFactory.getLogger(SecurityAutoConfiguration.class);
 
     private final String  urlPatterns = "/*";
+
+
+    @Bean
+    public FilterRegistrationBean<BlacklistFilter> blacklistFilter(SecurityProperties securityProperties) {
+        log.info("building {}",FilterOrderCode.FILTER_ORDER_CODE_90.getName());
+        FilterRegistrationBean<BlacklistFilter> registration = new FilterRegistrationBean<>();
+        BlacklistFilter blacklistFilter = new BlacklistFilter();
+        blacklistFilter.setAuthenticationProperties(securityProperties);
+        registration.setFilter(blacklistFilter);
+        //配置过滤路径
+        registration.addUrlPatterns(urlPatterns);
+        //设置filter名称
+        registration.setName("blacklistFilter");
+        //请求中过滤器执行的先后顺序，值越小越先执行
+        registration.setOrder(FilterOrderCode.FILTER_ORDER_CODE_90.getCode());
+        return registration;
+    }
 
     @Bean
     public FilterRegistrationBean<SpecialPathFilter> specialPathFilter(SecurityProperties securityProperties) {
@@ -71,7 +89,7 @@ public class SecurityAutoConfiguration {
         return registration;
     }
 
-    @ConditionalOnExpression("${security.auth-enable:false}")
+    @ConditionalOnExpression("${easy.security.auth-enable:false}")
     @Bean
     public FilterRegistrationBean<AuthenticationFilter> authenticationFilter(SecurityProperties securityProperties, EasySecurityServer easySecurityServer) {
         log.info("building {}",FilterOrderCode.FILTER_ORDER_CODE_300.getName());
@@ -89,7 +107,7 @@ public class SecurityAutoConfiguration {
         return registration;
     }
 
-    @ConditionalOnExpression("${security.auth-enable:false} && ${security.authorize-enable:false}")
+    @ConditionalOnExpression("${easy.security.auth-enable:false} && ${easy.security.authorize-enable:false}")
     @Bean
     public FilterRegistrationBean<AuthorizationFilter> authorizationFilter(SecurityProperties securityProperties, EasySecurityServer easySecurityServer) {
         log.info("building {}",FilterOrderCode.FILTER_ORDER_CODE_400.getName());
@@ -107,7 +125,7 @@ public class SecurityAutoConfiguration {
         return registration;
     }
 
-    @ConditionalOnExpression("${security.request-data-enable:false}")
+    @ConditionalOnExpression("${easy.security.request-data-enable:false}")
     @Bean
     public FilterRegistrationBean<RequestDataFilter> requestDataFilter(SecurityProperties securityProperties) {
         log.info("building {}",FilterOrderCode.FILTER_ORDER_CODE_500.getName());

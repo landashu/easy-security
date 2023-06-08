@@ -40,36 +40,32 @@ public class Rep<T>{
         this.data = data;
     }
 
-    public static Rep ok(){
-        return new Rep(HttpStatus.HTTP_OK,null,null);
+    public static <T> Rep<T> ok(){
+        return new Rep<T>(HttpStatus.HTTP_OK,null,null);
     }
 
-    public static Rep ok(Object data){
-        return new Rep(HttpStatus.HTTP_OK,null,data);
+    public static <T> Rep<T> ok(T data){
+        return new Rep<T>(HttpStatus.HTTP_OK,null,data);
     }
 
-    public static Rep ok(IErrorCode iErrorCode){
-        return new Rep(iErrorCode.getCode(),iErrorCode.getMsg(),null);
+    public static <T> Rep<T> ok(IErrorCode iErrorCode){
+        return new Rep<T>(iErrorCode.getCode(),iErrorCode.getMsg(),null);
     }
 
-    public static Rep ok(IErrorCode iErrorCode, Object obj){
-        return new Rep(iErrorCode.getCode(),iErrorCode.getMsg(),obj);
+    public static <T> Rep<T> ok(IErrorCode iErrorCode, T obj){
+        return new Rep<T>(iErrorCode.getCode(),iErrorCode.getMsg(),obj);
     }
 
-    public static Rep error(IErrorCode iErrorCode){
-        return new Rep(iErrorCode.getCode(),iErrorCode.getMsg(),null);
+    public static <T> Rep<T> error(IErrorCode iErrorCode){
+        return new Rep<T>(iErrorCode.getCode(),iErrorCode.getMsg(),null);
     }
 
-    public static Rep error(Rep rep){
-        return new Rep(rep.getCode(), rep.getMsg(),null);
+    public static <T> Rep<T> error(Rep<T> rep){
+        return new Rep<T>(rep.getCode(), rep.getMsg(),null);
     }
 
-    public static Rep error(IErrorCode iErrorCode, Object obj){
-        return new Rep(iErrorCode.getCode(),iErrorCode.getMsg(),obj);
-    }
-
-    public static Rep error(Integer code, String msg){
-        return new Rep(code,msg,null);
+    public static <T> Rep<T> error(Integer code, String msg){
+        return new Rep<T>(code,msg,null);
     }
 
     public Rep() {

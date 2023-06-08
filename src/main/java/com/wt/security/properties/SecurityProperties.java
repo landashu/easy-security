@@ -34,6 +34,10 @@ public class SecurityProperties {
      */
     private List<String> decryptUrl = new ArrayList<>();
     /**
+     * 黑名单
+     */
+    private List<String> blackList = new ArrayList<>();
+    /**
      * 发生异常跳转地址
      */
     private String errorUrl = "/failure/authenticationFilter";
@@ -114,5 +118,11 @@ public class SecurityProperties {
         this.secretKey = secretKey;
     }
 
+    public List<String> getBlackList() {
+        return blackList;
+    }
 
+    public void setBlackList(List<String> blackList) {
+        this.blackList = blackList;
+    }
 }
